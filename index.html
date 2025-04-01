@@ -116,11 +116,12 @@
       color: white;
     }
     .checklist {
-      display: grid;
-      grid-template-columns: repeat(8, 1fr);
-      gap: 0.5rem;
-      margin-top: 2rem;
-    }
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  gap: 0.5rem;
+  margin-top: 2rem;
+  justify-items: center;
+}
     .checklist button {
       padding: 0.5rem;
       border: 1px solid #ccc;
