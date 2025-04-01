@@ -1,49 +1,291 @@
-<!doctype html>
-<html lang=en>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset=UTF-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<title>StudyPro by Adam</title>
-<style>:root{--bg:#f8f9fb;--text:#1c1c1e;--card:#ffffff;--accent:#007aff;--highlight:#d6e4ff;--shadow:rgba(0, 0, 0, 0.08);--radius:16px;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}[data-theme=dark]{--bg:#1a1a1d;--text:#f0f0f0;--card:#262626;--accent:#90caf9;--highlight:#33334d}*{box-sizing:border-box;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}body{margin:0;font-family:var(--font);background-color:var(--bg);color:var(--text);transition:background-color .3s ease,color .3s ease}header{background-color:var(--accent);color:#fff;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;box-shadow:0 10px 20px var(--shadow);font-size:1.2rem;letter-spacing:.5px}#themeToggle{background:#fff;color:var(--accent);border:none;border-radius:var(--radius);padding:.5rem 1.2rem;font-weight:600;box-shadow:0 2px 6px var(--shadow);cursor:pointer;transition:all .3s ease}.container{display:flex;height:calc(100vh - 70px)}.sidebar{width:280px;background-color:var(--card);border-right:1px solid #ddd;padding:1rem;overflow-y:auto}.content{flex-grow:1;padding:1rem;overflow-y:auto}.subject-title{font-weight:700;cursor:pointer;margin-bottom:.5rem;font-size:1.1rem}.topic-list{margin-left:1rem}.topic{background-color:var(--highlight);margin:.4rem 0;padding:.6rem 1rem;border-radius:var(--radius);cursor:pointer;transition:background .3s ease;font-weight:500;box-shadow:0 2px 4px var(--shadow)}textarea{width:100%;height:300px;padding:1.2rem;font-size:1.05rem;border-radius:var(--radius);border:1px solid #ccc;background-color:var(--card);color:var(--text);box-shadow:inset 0 1px 3px rgba(0,0,0,.05);transition:all .3s ease}.tools{margin-top:1rem}.tools button{margin-right:.5rem;padding:.5rem 1rem;border:none;border-radius:6px;cursor:pointer;background-color:var(--accent);color:#fff}.checklist{display:grid;grid-template-columns:repeat(8,1fr);gap:.5rem;margin-top:2rem}.checklist button{padding:.5rem;border:1px solid #ccc;border-radius:6px;background-color:#fff;cursor:pointer}.checklist button.checked{background-color:var(--accent);color:#fff}.nav-pages button{margin:.2rem;padding:.3rem .7rem;background-color:var(--highlight);border:none;border-radius:5px;cursor:pointer}</style>
-</head>
-<body data-theme=light>
-<header>
-<h1>StudyPro by Adam 🧠📚</h1>
-<button id=themeToggle>🌙 Toggle Theme</button>
-</header>
-<div class=container>
-<div class=sidebar id=sidebar></div>
-<div class=content>
-<div class=nav-pages id=pageNav></div>
-<h2 id=current-topic>Choose a topic to study</h2>
-<textarea id=noteArea placeholder="Type your notes here..."></textarea>
-<div class=tools>
-<button onclick=startTimer()>⏱️ Start</button>
-<button onclick=stopTimer()>⏹️ Stop</button>
-<span>Time: <span id=timer>00:00</span></span>
-<button onclick=startPomodoro()>🍅 Pomodoro</button>
-</div>
-<div class=checklist id=dayChecklist></div>
-</div>
-<div id=todoPopup style="display:none;position:fixed;top:20%;left:50%;transform:translateX(-50%);background:var(--card);padding:1rem;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,.2);z-index:999">
-<h3>✅ To-Do List for Selected Day</h3>
-<ul id=todoList style=list-style:none;padding:0></ul>
-<input id=newTask placeholder="Add task..." style=padding:.5rem;width:80%;margin-top:.5rem>
-<button onclick=addTask() style="margin-top:.5rem;padding:.3rem .8rem">Add</button>
-<button onclick=closePopup() style="margin-top:.5rem;padding:.3rem .8rem;background:#f55;color:#fff;border:none;border-radius:5px">Close</button>
-</div>
-</div>
-  <script>
-  document.addEventListener("contextmenu", e => e.preventDefault());
-  document.onkeydown = e => {
-    if (e.key === "F12" || 
-        (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) || 
-        (e.ctrlKey && e.key === "U")) {
-      e.preventDefault();
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StudyPro by Adam</title>
+  <style>
+    :root {
+      --bg: #f9f9fb;
+      --text: #2c2c2e;
+      --card: #ffffff;
+      --accent: #6c63ff;
+      --highlight: #e0e0ff;
     }
-  };
-</script>
+    [data-theme="dark"] {
+      --bg: #1a1a1d;
+      --text: #f0f0f0;
+      --card: #262626;
+      --accent: #90caf9;
+      --highlight: #33334d;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    header {
+      background-color: var(--accent);
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    #themeToggle {
+      background: white;
+      color: var(--accent);
+      border: none;
+      border-radius: 6px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+    }
+    .container {
+      display: flex;
+      height: calc(100vh - 70px);
+    }
+    .sidebar {
+      width: 280px;
+      background-color: var(--card);
+      border-right: 1px solid #ddd;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+    .content {
+      flex-grow: 1;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+    .subject-title {
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+    .topic-list {
+      margin-left: 1rem;
+    }
+    .topic {
+      background-color: var(--highlight);
+      margin: 0.3rem 0;
+      padding: 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    textarea {
+      width: 100%;
+      height: 300px;
+      padding: 1rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background-color: var(--card);
+      color: var(--text);
+    }
+    .tools {
+      margin-top: 1rem;
+    }
+    .tools button {
+      margin-right: 0.5rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background-color: var(--accent);
+      color: white;
+    }
+    .checklist {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 0.5rem;
+      margin-top: 2rem;
+    }
+    .checklist button {
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background-color: white;
+      cursor: pointer;
+    }
+    .checklist button.checked {
+      background-color: var(--accent);
+      color: white;
+    }
+    .nav-pages button {
+      margin: 0.2rem;
+      padding: 0.3rem 0.7rem;
+      background-color: var(--highlight);
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <header>
+    <h1>StudyPro by Adam 🧠📚</h1>
+    <button id="themeToggle">🌙 Toggle Theme</button>
+  </header>
+  <div class="container">
+    <div class="sidebar" id="sidebar"></div>
+    <div class="content">
+      <div class="nav-pages" id="pageNav"></div>
+      <h2 id="current-topic">Choose a topic to study</h2>
+      <textarea id="noteArea" placeholder="Type your notes here..."></textarea>
+      <div class="tools">
+        <button onclick="startTimer()">⏱️ Start</button>
+        <button onclick="stopTimer()">⏹️ Stop</button>
+        <span>Time: <span id="timer">00:00</span></span>
+        <button onclick="startPomodoro()">🍅 Pomodoro</button>
+      </div>
+      <div class="checklist" id="dayChecklist"></div>
+    </div>
+<div id="todoPopup" style="display:none; position: fixed; top: 20%; left: 50%; transform: translateX(-50%); background: var(--card); padding: 1rem; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 999;">
+  <h3>✅ To-Do List for Selected Day</h3>
+  <ul id="todoList" style="list-style: none; padding: 0;"></ul>
+  <input id="newTask" type="text" placeholder="Add task..." style="padding: 0.5rem; width: 80%; margin-top: 0.5rem;" />
+  <button onclick="addTask()" style="margin-top: 0.5rem; padding: 0.3rem 0.8rem;">Add</button>
+  <button onclick="closePopup()" style="margin-top: 0.5rem; padding: 0.3rem 0.8rem; background: #f55; color: white; border: none; border-radius: 5px;">Close</button>
+</div>
+</div>
+<script>
+    const subjects = {"Français":["La Boîte à merveilles","Antigone","Le Dernier jour d’un condamné","Énonciation","Focalisation","Champs lexicaux","Registres de langue","Figures de style","Discours rapporté","Connecteurs logiques","Étude d’image","Production écrite"],"Arabe":["الشعر الحديث","الحال، التمييز، الاستفهام، الأمر والنهي","التمني والنداء","الممنوع من الصرف، المصادر، النسبة","الإيجاز والإطناب، الطباق والمقابلة، الاستعارة","مهارة الربط بين الأفكار","تحليل صورة","المقارنة والاستنتاج","توسيع فكرة"],"Islamic Studies":["سورة يوسف","الإيمان بالغيب، الإيمان والعلم، الإيمان والفلسفة، الإيمان وعمارة الأرض","صلح الحديبية وفتح مكة","الرسول مستشارًا ومفاوضًا","عثمان بن عفان","الزواج، الطلاق، رعاية الأطفال وحقوقهم","حق الله، حق النفس، حق الغير، حق البيئة","الكفاءة والاستحقاق، العفو والتسامح، الوقاية من الفواحش"],"History":["التحولات الكبرى للعالم الرأسمالي في القرن 19","التنافس الإمبريالي","الحرب العالمية الأولى والثانية","نظام الحماية بالمغرب","اليقظة الفكرية بالمشرق العربي","نضال المغرب من أجل الاستقلال","العولمة والتحديات الراهنة"],"Geography":["مفهوم التنمية","التهيئة الحضرية والريفية","المجال المغربي: الموارد الطبيعية والبشرية","الاختيارات الكبرى لسياسة إعداد التراب الوطني","الشراكة بين المغرب والاتحاد الأوروبي","قوى اقتصادية كبرى: الولايات المتحدة، الاتحاد الأوروبي، الصين","العالم العربي: مشاكله التنموية"]};
+    const pages = Object.keys(subjects);
+    const sidebar = document.getElementById('sidebar');
+    const noteArea = document.getElementById('noteArea');
+    const currentTopic = document.getElementById('current-topic');
+    const pageNav = document.getElementById('pageNav');
+    let currentKey = '';
+    let currentPage = pages[0];
+    pages.forEach(p => {
+      const btn = document.createElement('button');
+      btn.textContent = p;
+      btn.onclick = () => loadPage(p);
+      pageNav.appendChild(btn);
+    });
+    function loadPage(subject) {
+      sidebar.innerHTML = '';
+      const div = document.createElement('div');
+      div.className = 'subject';
+      const title = document.createElement('div');
+      title.className = 'subject-title';
+      title.textContent = subject;
+      const list = document.createElement('div');
+      list.className = 'topic-list';
+      list.style.display = 'block';
+      subjects[subject].forEach(topic => {
+        const btn = document.createElement('div');
+        btn.className = 'topic';
+        btn.textContent = topic;
+        btn.onclick = () => {
+          currentKey = subject + '_' + topic;
+          currentTopic.textContent = `${subject} — ${topic}`;
+          noteArea.value = localStorage.getItem(currentKey) || '';
+        };
+        list.appendChild(btn);
+      });
+      div.appendChild(title);
+      div.appendChild(list);
+      sidebar.appendChild(div);
+    }
+    noteArea.oninput = () => {
+      if (currentKey) localStorage.setItem(currentKey, noteArea.value);
+    };
+    document.getElementById('themeToggle').onclick = () => {
+      const mode = document.body.getAttribute('data-theme');
+      const newMode = mode === 'dark' ? 'light' : 'dark';
+      document.body.setAttribute('data-theme', newMode);
+      localStorage.setItem('theme', newMode);
+    };
+    document.body.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
 
-<script>const subjects={"Français":["La Boîte à merveilles","Antigone","Le Dernier jour d’un condamné","Énonciation","Focalisation","Champs lexicaux","Registres de langue","Figures de style","Discours rapporté","Connecteurs logiques","Étude d’image","Production écrite"],Arabe:["الشعر الحديث","الحال، التمييز، الاستفهام، الأمر والنهي","التمني والنداء","الممنوع من الصرف، المصادر، النسبة","الإيجاز والإطناب، الطباق والمقابلة، الاستعارة","مهارة الربط بين الأفكار","تحليل صورة","المقارنة والاستنتاج","توسيع فكرة"],"Islamic Studies":["سورة يوسف","الإيمان بالغيب، الإيمان والعلم، الإيمان والفلسفة، الإيمان وعمارة الأرض","صلح الحديبية وفتح مكة","الرسول مستشارًا ومفاوضًا","عثمان بن عفان","الزواج، الطلاق، رعاية الأطفال وحقوقهم","حق الله، حق النفس، حق الغير، حق البيئة","الكفاءة والاستحقاق، العفو والتسامح، الوقاية من الفواحش"],History:["التحولات الكبرى للعالم الرأسمالي في القرن 19","التنافس الإمبريالي","الحرب العالمية الأولى والثانية","نظام الحماية بالمغرب","اليقظة الفكرية بالمشرق العربي","نضال المغرب من أجل الاستقلال","العولمة والتحديات الراهنة"],Geography:["مفهوم التنمية","التهيئة الحضرية والريفية","المجال المغربي: الموارد الطبيعية والبشرية","الاختيارات الكبرى لسياسة إعداد التراب الوطني","الشراكة بين المغرب والاتحاد الأوروبي","قوى اقتصادية كبرى: الولايات المتحدة، الاتحاد الأوروبي، الصين","العالم العربي: مشاكله التنموية"]},pages=Object.keys(subjects),sidebar=document.getElementById("sidebar"),noteArea=document.getElementById("noteArea"),currentTopic=document.getElementById("current-topic"),pageNav=document.getElementById("pageNav");let timerID,startTime,currentKey="",currentPage=pages[0];function loadPage(e){sidebar.innerHTML="";const t=document.createElement("div");t.className="subject";const o=document.createElement("div");o.className="subject-title",o.textContent=e;const n=document.createElement("div");n.className="topic-list",n.style.display="block",subjects[e].forEach((t=>{const o=document.createElement("div");o.className="topic",o.textContent=t,o.onclick=()=>{currentKey=e+"_"+t,currentTopic.textContent=`${e} — ${t}`,noteArea.value=localStorage.getItem(currentKey)||""},n.appendChild(o)})),t.appendChild(o),t.appendChild(n),sidebar.appendChild(t)}function updateChronoDisplay(){const e=Date.now()-startTime,t=Math.floor(e/6e4),o=Math.floor(e%6e4/1e3);document.getElementById("timer").textContent=`${t.toString().padStart(2,"0")}:${o.toString().padStart(2,"0")}`}function startTimer(){stopTimer(),startTime=Date.now(),updateChronoDisplay(),timerID=setInterval(updateChronoDisplay,1e3)}function stopTimer(){clearInterval(timerID)}function startPomodoro(){stopTimer();let e=1500,t=!1,o=setInterval((()=>{e--,e<=0&&(t?(clearInterval(o),alert("Pomodoro session complete!")):(t=!0,e=300,alert("Time for a 5-minute break!")))}),1e3)}pages.forEach((e=>{const t=document.createElement("button");t.textContent=e,t.onclick=()=>loadPage(e),pageNav.appendChild(t)})),noteArea.oninput=()=>{currentKey&&localStorage.setItem(currentKey,noteArea.value)},document.getElementById("themeToggle").onclick=()=>{const e="dark"===document.body.getAttribute("data-theme")?"light":"dark";document.body.setAttribute("data-theme",e),localStorage.setItem("theme",e)},document.body.setAttribute("data-theme",localStorage.getItem("theme")||"light");const checklist=document.getElementById("dayChecklist"),saved=JSON.parse(localStorage.getItem("dayChecks")||"[]");for(let e=1;e<=56;e++){const t=document.createElement("button");t.textContent=e,saved.includes(e)&&t.classList.add("checked"),t.onclick=()=>openTodoPopup(e),checklist.appendChild(t)}function openTodoPopup(e){const t=document.getElementById("todoList"),o=JSON.parse(localStorage.getItem(`day${e}Todos`)||"[]");t.innerHTML="",o.forEach(((o,n)=>{const a=document.createElement("li");a.style.margin="0.3rem 0",a.innerHTML=`<input type='checkbox' ${o.done?"checked":""} onchange='toggleTask(${e}, ${n})' /> ${o.text}`,t.appendChild(a)})),document.getElementById("newTask").setAttribute("data-day",e),document.getElementById("todoPopup").style.display="block"}function closePopup(){document.getElementById("todoPopup").style.display="none"}function addTask(){const e=document.getElementById("newTask"),t=e.getAttribute("data-day"),o=e.value.trim();if(!o)return;const n=`day${t}Todos`,a=JSON.parse(localStorage.getItem(n)||"[]");a.push({text:o,done:!1}),localStorage.setItem(n,JSON.stringify(a)),e.value="",openTodoPopup(t)}function toggleTask(e,t){const o=`day${e}Todos`,n=JSON.parse(localStorage.getItem(o));n[t].done=!n[t].done,localStorage.setItem(o,JSON.stringify(n)),openTodoPopup(e)}loadPage(currentPage)</script>
+    let timerID;
+    let startTime;
+    function updateChronoDisplay() {
+  const now = Date.now();
+  const elapsed = now - startTime;
+  const minutes = Math.floor(elapsed / 60000);
+  const seconds = Math.floor((elapsed % 60000) / 1000);
+  document.getElementById('timer').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+    function startTimer() {
+      stopTimer();
+      startTime = Date.now();
+      updateChronoDisplay();
+      timerID = setInterval(updateChronoDisplay, 1000);
+    }
+    function stopTimer() {
+      clearInterval(timerID);
+    }
+    function startPomodoro() {
+      stopTimer();
+      let session = 25 * 60, breakTime = 5 * 60, isBreak = false;
+      let pomodoroID = setInterval(() => {
+        session--;
+        if (session <= 0) {
+          if (isBreak) {
+            clearInterval(pomodoroID);
+            alert('Pomodoro session complete!');
+          } else {
+            isBreak = true;
+            session = breakTime;
+            alert('Time for a 5-minute break!');
+          }
+        }
+      }, 1000);
+    }
+    const checklist = document.getElementById('dayChecklist');
+    const saved = JSON.parse(localStorage.getItem('dayChecks') || '[]');
+    for (let i = 1; i <= 56; i++) {
+  const btn = document.createElement('button');
+  btn.textContent = i;
+  if (saved.includes(i)) btn.classList.add('checked');
+  btn.onclick = () => openTodoPopup(i);
+  checklist.appendChild(btn);
+    }
+    function openTodoPopup(day) {
+  const todoList = document.getElementById('todoList');
+  const data = JSON.parse(localStorage.getItem(`day${day}Todos`) || '[]');
+  todoList.innerHTML = '';
+  data.forEach((task, index) => {
+    const li = document.createElement('li');
+    li.style.margin = '0.3rem 0';
+    li.innerHTML = `<input type='checkbox' ${task.done ? 'checked' : ''} onchange='toggleTask(${day}, ${index})' /> ${task.text}`;
+    todoList.appendChild(li);
+  });
+  document.getElementById('newTask').setAttribute('data-day', day);
+  document.getElementById('todoPopup').style.display = 'block';
+}
+function closePopup() {
+  document.getElementById('todoPopup').style.display = 'none';
+}
+function addTask() {
+  const input = document.getElementById('newTask');
+  const day = input.getAttribute('data-day');
+  const text = input.value.trim();
+  if (!text) return;
+  const key = `day${day}Todos`;
+  const data = JSON.parse(localStorage.getItem(key) || '[]');
+  data.push({ text, done: false });
+  localStorage.setItem(key, JSON.stringify(data));
+  input.value = '';
+  openTodoPopup(day);
+}
+function toggleTask(day, index) {
+  const key = `day${day}Todos`;
+  const data = JSON.parse(localStorage.getItem(key));
+  data[index].done = !data[index].done;
+  localStorage.setItem(key, JSON.stringify(data));
+  openTodoPopup(day);
+}
+
+loadPage(currentPage);
+  </script>
 </body>
 </html>
